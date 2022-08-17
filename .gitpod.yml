@@ -6,6 +6,7 @@ tasks:
   - init: >
       mkdir -p /home/gitpod/.config/nix &&
       echo 'sandbox = false' >> /home/gitpod/.config/nix/nix.conf
+    command: exit
   - name: nix
     command: |
       direnv allow
@@ -16,7 +17,8 @@ tasks:
         sudo mkdir -p /var/lib/tailscale
         echo "${TAILSCALE_STATE}" | sudo tee /var/lib/tailscale/tailscaled.state > /dev/null
       fi
-      sudo tailscaled
+      sudo tailscaled &
+      exit
   - name: tailscale
     command: |
       if [ -n "${TAILSCALE_STATE}" ]; then
@@ -27,7 +29,8 @@ tasks:
         # store the tailscale state into gitpod user
         gp env TAILSCALE_STATE="$(sudo cat /var/lib/tailscale/tailscaled.state)"
       fi
-
+      exit
+      
 vscode:
   extensions:
     - bbenoist.Nix
